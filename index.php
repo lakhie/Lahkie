@@ -1,5 +1,6 @@
 <?php
 session_start();
+define("LAHKIEPATH", TRUE);
 //Error reporting
 ini_set('max_execution_time', 0);
 error_reporting(-1);
@@ -19,9 +20,6 @@ if (isset($_GET)) {
     $uri = implode("/", $uri);
 }
 $uri_exploded = explode("/", $uri);
-
-$function_called = trim($uri_exploded[2]);
-
     //The function is expected to have arguments
 $args = [];
 for ($i = 2; $i < count($uri_exploded); $i++) {
@@ -98,29 +96,6 @@ function map_uri_to_method($routes, $args, $args_array)
                 }
             } else
                 continue;
-            //End tesing
-            //echo $route;
-            //$string = $string . "/(:any)";
-//            for ($i = 0; $i < count($args_array); $i++) {
-//                if (isset($dynamic_route[$i]))
-//                    unset($args_array[$i]);
-//            }
-//            if (strcmp($string, $route) === 0) {
-//                //Lets get number of arguments required and match them to the ones supplied;
-//                $val_route = explode("/", $val);
-//                $count_args = count($val_route) - 2;
-//                if ($count_args == 0 or count($args_array) != $count_args)
-//                    continue;
-//                else{
-//                    include_once("./controllers/" . $val_route[0] . ".php");
-//                    $class_ucfirst = ucfirst($val_route[0]);
-//                    $class = New $class_ucfirst;
-//                    //call_user_func_array(array($class, $val_route[1]), $args_array);
-//                    //return;
-//                }
-//                //continue; //If arguments supplied are less than 0;
-//            } else
-//                continue;
         }
         //If arguments are supplied;
     }
