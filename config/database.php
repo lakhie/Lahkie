@@ -1,5 +1,5 @@
 <?php
-$database_config['host'] = 'localhost';
-$database_config['username'] = 'root';
+$database_config['host'] = '';
+$database_config['username'] = '';
 $database_config['password'] = '';
-$database_config['database'] = 'somaafrica';
+$database_config['database'] = '';
