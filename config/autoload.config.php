@@ -82,7 +82,7 @@ class Controller extends Input {
     }
 }
 
-class Model {
+class Model extends Controller{
     function __construct(){
         parent::__construct();
     }
