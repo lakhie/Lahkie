@@ -40,9 +40,9 @@ class Controller {
         //parent::__construct();
         //Loading smarty
         $smarty = new Smarty();
-        $smarty->setTemplateDir('./views/templates')
-            ->setCompileDir('./views/templates_c')
-            ->setCacheDir('./views/cache');
+        $smarty->setTemplateDir(APP_PATH.'views/templates')
+            ->setCompileDir(APP_PATH.'views/templates_c')
+            ->setCacheDir(APP_PATH.'views/cache');
         $this->smarty = $smarty;
 
         //Loading models
