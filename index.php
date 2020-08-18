@@ -1,16 +1,16 @@
 <?php
 session_start();
-define("LAHKIEPATH", TRUE);
 //Error reporting
 ini_set('max_execution_time', 0);
 error_reporting(-1);
 
+define("SYSTEM_PATH", "system/");
+define("APP_PATH", "app/");
 
-
-include_once("./config/autoload.config.php");
+include_once(SYSTEM_PATH."config/autoload.config.php");
 global $database;
 $routes = $route;
-//die (print_r($_SERVER));
+
 $uri = $_SERVER['REQUEST_URI'];
 
 //Simple routes.
@@ -22,8 +22,8 @@ if (isset($_GET)) {
 $uri_exploded = explode("/", $uri);
     //The function is expected to have arguments
 $args = [];
-for ($i = 2; $i < count($uri_exploded); $i++) {
-    if (empty($uri_exploded[$i]))
+for ($i = 1; $i < count($uri_exploded); $i++) {
+    if (strlen($uri_exploded[$i]) < 1)
         //For urls that end in slashes, we truncate the last space and match the uri to the perfect route
         //Eg, ./some/ and ./some are the same. There we treat both as the same
         continue;
@@ -33,7 +33,6 @@ for ($i = 2; $i < count($uri_exploded); $i++) {
 $args_array = $args;
 $args = implode("/", $args);
 $args = implode("/", explode("?", $args));
-
 map_uri_to_method($routes, $args, $args_array);
 function map_uri_to_method($routes, $args, $args_array)
 {
@@ -47,11 +46,11 @@ function map_uri_to_method($routes, $args, $args_array)
             //We use it to determine the exact url by match the uri with the route class arguments
             //unset($dynamic_route[count($dynamic_route) - 1]);
         }
-        if (!$is_args_supplied) {
+        if (! $is_args_supplied) {
             if ($route == $args) {
                 //Less build the function from the appropriate file
                 $val_route = explode("/", $val);
-                include_once("./controllers/" . strtolower($val_route[0]) . ".php");
+                include_once(APP_PATH."controllers/" . $val_route[0] . ".php");
                 $class_ucfirst = ucfirst($val_route[0]);
                 $class = New $class_ucfirst;
                 call_user_func(array($class, $val_route[1]));
@@ -88,16 +87,15 @@ function map_uri_to_method($routes, $args, $args_array)
                 if (strcmp($args_array_reversed, $dynamic_route_reversed) == 0) {
                     //When the strings match, we then route the request to the called class and method
                     $val_route = explode("/", $val); //We get the routing value and break it down to get the file name and class name
-                    include_once("./controllers/" . $val_route[0] . ".php"); //We then import the class file
+                    include_once(APP_PATH."controllers/" . $val_route[0] . ".php"); //We then import the class file
                     $class_ucfirst = ucfirst($val_route[0]);
                     $class = New $class_ucfirst;
-                    call_user_func_array(array($class, $val_route[1]), $func_arguments);
+                    call_user_func_array(array($class, $val_route[1]), array_reverse($func_arguments));
                     return;
                 }
             } else
                 continue;
         }
-        //If arguments are supplied;
     }
     header("HTTP/1.0 404 Not Found");
     ?>
@@ -107,7 +105,7 @@ function map_uri_to_method($routes, $args, $args_array)
             "//:<?php echo $_SERVER['HTTP_HOST'] . "/" . $_SERVER['REQUEST_URI']; ?>.
             <br/>Contact the administrator of this site or recheck the url again.
             <br/>
-            <small>Default Error page for Ashan MVC.</small>
+            <small>Default Error page for LAHKIE MVC LIBRARY.</small>
         </p>
     </div>
     <?php

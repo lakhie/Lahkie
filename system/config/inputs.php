@@ -1,11 +1,11 @@
 <?php
-class Input extends Server {
+class Input {
     function __construct()
     {
-        parent::__construct();
+
     }
 
-    function input_post($string = '') {
+    function post($string = '') {
         $string = trim($string);
         if (empty($string))
             return $_POST;
@@ -15,7 +15,7 @@ class Input extends Server {
             return false;
     }
 
-    function input_get($string = '') {
+    function get($string = '') {
         $string = trim($string);
         if (empty($string))
             return $_GET;
@@ -24,8 +24,14 @@ class Input extends Server {
         else
             return false;
     }
+}
 
-    function send_mail($to, $subject, $from, $message) {
+class Mail {
+    function __construct()
+    {
+    }
+
+    function mail($to, $subject, $from, $message) {
         $headers = "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
         $headers .= "From:". $from . "\r\n";
@@ -38,16 +44,52 @@ class Input extends Server {
     }
 }
 
-class Session {
+class Cookies  {
+    public $cookie;
     function __construct()
     {
+        //parent::__construct();
+        $this->cookie = $this->get_cookie();
     }
 
-    function sess_setuserdata($session, $data) {
+    function get_cookie() {
+        return $_COOKIE;
+    }
+    function set($cookie_name, $cookie_data) {
+        setcookie($cookie_name, $cookie_data, time() + (86400 * 30 * 3), "/");
+    }
+
+    function read($cookie_name = false) {
+        if (isset($cookie_name))
+            if (isset($_COOKIE[$cookie_name]))
+                return $_COOKIE[$cookie_name];
+            else
+                return false;
+        return $_COOKIE;
+
+    }
+
+    function destroy($cookie) {
+        setcookie( $cookie, "", time()- 60, "/","", 0);
+    }
+}
+
+class Session {
+    public $session_data;
+    function __construct()
+    {
+        $this->session_data = $this->session_data();
+    }
+
+    function session_data() {
+        return json_decode(json_encode(array()));
+    }
+
+    function set_user_data($session, $data) {
         $_SESSION[$session] = $data;
     }
 
-    function sess_data($session) {
+    function data($session) {
         if (empty(trim($session)))
             return $_SESSION;
         if (isset ($_SESSION[$session]))
@@ -56,35 +98,36 @@ class Session {
             return false;
     }
 
-    function sess_removedata($session) {
+    function remove_data($session) {
         if (isset($_SESSION[$session]))
             unset($_SESSION[$session]);
         return true;
     }
 
-    function sess_destroy() {
+    function destroy() {
         session_unset();
         session_destroy();
     }
 }
 
-class Server extends Session {
+
+class Server {
     function __construct()
     {
     }
-    function server_request_method() {
+    function request_method() {
         return $_SERVER['REQUEST_METHOD'];
     }
 
-    function server_query_string() {
+    function query_string() {
         return $_SERVER['QUERY_STRING'];
     }
 
-    function server_request_uri() {
+    function request_uri() {
         return $_SERVER['REQUEST_URI'];
     }
 
-    function server_document_root() {
+    function document_root() {
         return $_SERVER['DOCUMENT_ROOT'];
     }
 
@@ -92,11 +135,17 @@ class Server extends Session {
         return $_SERVER['SERVER_NAME'];
     }
 
-    function server_addr() {
+    function http_referer() {
+        if (isset($_SERVER['HTTP_REFERER']))
+            return $_SERVER['HTTP_REFERER'];
+        else return $this->server_name();
+    }
+
+    function addr() {
         return $_SERVER['SERVER_ADDR'];
     }
 
-    function server_remote_addr() {
+    function remote_addr() {
         return $_SERVER['REMOTE_ADDR'];
     }
 }
